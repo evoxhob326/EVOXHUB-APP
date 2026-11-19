@@ -174,7 +174,7 @@ s_new:"جديدة",s_prog:"قيد التنفيذ",s_review:"للمراجعة",s_
 pending:"بانتظار الاعتماد",approved:"معتمد",rejected:"مرفوض",approve:"موافقة",reject:"رفض",kind:"النوع",k_quote:"عرض سعر",k_exp:"مصروف",category:"التصنيف",
 c_project:"مشروع جديد",c_invest:"فرصة استثمار",c_partner:"تعاون",c_service:"تطوير خدمة",c_goal:"هدف",c_init:"مبادرة",role:"الدور",phone:"واتساب",
 nothing:"لا شيء هنا بعد",signin:"جارٍ التحميل…",me:"أنت",owner:"الإدارة",meeting:"اجتماع",clientM:"موعد عميل",delivery:"تسليم",
-t_idea:"فكرة",t_doing:"قيد الدراسة",t_go:"اعتُمدت للتنفيذ",by:"من",sendWa:"تذكير واتساب",waMsg:"تذكير من EVOXHUB: المهمة «{t}» موعد تسليمها {d}.",
+t_idea:"فكرة",t_doing:"قيد الدراسة",t_go:"اعتُمدت للتنفيذ",by:"من",sendWa:"تذكير واتساب",waMsg:"تذكير من EVOXHUB: المهمة «{t}» موعد تسليمها {d}. التفاصيل: {x}"
 g_late:"متأخرة",g_today:"اليوم",g_tom:"غداً",g_week:"هذا الأسبوع",g_later:"لاحقاً",remToday:"تسليمها اليوم",remTom:"تسليمها غداً",remLate:"متأخرة",alerts:"تنبيهات",
 division:"القسم",d_bs:"خدمات الأعمال",d_bd:"تطوير الأعمال",d_mc:"الإعلام والإبداع (ريڤ)",d_ds:"الحلول الرقمية",d_mg:"التسويق والنمو",value:"القيمة (ر.ع)",j_new:"جديد",j_prog:"قيد التنفيذ",j_wait:"بانتظار العميل",j_done:"مكتمل",
 jobTasks:"مهام هذا الشغل",back:"رجوع",body:"اكتب رسالتك…",send:"إرسال",sent:"أُرسلت",
@@ -194,7 +194,7 @@ s_new:"New",s_prog:"In progress",s_review:"In review",s_done:"Done",p_h:"High",p
 pending:"Pending",approved:"Approved",rejected:"Rejected",approve:"Approve",reject:"Reject",kind:"Kind",k_quote:"Quotation",k_exp:"Expense",category:"Category",
 c_project:"New project",c_invest:"Investment",c_partner:"Partnership",c_service:"Service upgrade",c_goal:"Goal",c_init:"Initiative",role:"Role",phone:"WhatsApp",
 nothing:"Nothing here yet",signin:"Loading…",me:"You",owner:"Management",meeting:"Meeting",clientM:"Client appointment",delivery:"Delivery",
-t_idea:"Idea",t_doing:"Under study",t_go:"Approved",by:"From",sendWa:"WhatsApp reminder",waMsg:"EVOXHUB reminder: task \"{t}\" is due {d}.",
+t_idea:"Idea",t_doing:"Under study",t_go:"Approved",by:"From",sendWa:"WhatsApp reminder",waMsg:"EVOXHUB reminder: task \"{t}\" is due {d}. Details: {x}"
 g_late:"Overdue",g_today:"Today",g_tom:"Tomorrow",g_week:"This week",g_later:"Later",remToday:"due today",remTom:"due tomorrow",remLate:"overdue",alerts:"Alerts",
 division:"Division",d_bs:"Business Services",d_bd:"Business Development",d_mc:"Media & Creative (REVE)",d_ds:"Digital Solutions",d_mg:"Marketing & Growth",value:"Value (OMR)",j_new:"New",j_prog:"In progress",j_wait:"Waiting on client",j_done:"Completed",
 jobTasks:"Tasks in this job",back:"Back",body:"Write a message…",send:"Send",sent:"Sent",
@@ -246,9 +246,9 @@ const jTag=s=>`<span class="tag ${s==="j_done"?"ok":s==="j_wait"?"warn":s==="j_n
 const bar=p=>`<div class="bar"><i style="width:${+p||0}%"></i></div>`;
 const empty=()=>`<div class="card empty">${t("nothing")}</div>`;
 function waLink(x){const m=members.find(m=>m.id===x._m);const ph=(m&&m.phone||"").replace(/\D/g,"");if(!ph)return"";
-return`<a class="wa" href="https://wa.me/${ph}?text=${encodeURIComponent(t("waMsg").replace("{t}",x.title).replace("{d}",x.due))}" target="_blank" rel="noopener">${t("sendWa")}</a>`}
+return`<a class="wa" onclick="event.stopPropagation()" href="https://wa.me/${ph}?text=${encodeURIComponent(t("waMsg").replace("{t}",x.title).replace("{d}",x.due).replace("{x}",x.details||"—"))}" target="_blank" rel="noopener">${t("sendWa")}</a>`}
 const tkCard=x=>`<div class="tk" data-tk="${x._m}|${x.id}"><b>${esc(x.title)}</b><div class="row mute"><span>${esc(x.due)}</span>${ADMIN?`·<span>${esc(nm(x._m))}</span>`:""}${x.priority==="p_h"?`<span class="tag bad">${t("p_h")}</span>`:""}${isLate(x)?`<span class="tag bad">${t("late")}</span>`:""}</div>
-${x.jobTitle?`<div class="mute">▣ ${esc(x.jobTitle)}</div>`:""}${x.sharedBy?`<div class="mute">⇄ ${t("shared")} ${esc(nm(x.sharedBy))}</div>`:""}<div style="margin-top:6px">${bar(x.progress)}</div></div>`;
+${x.jobTitle?`<div class="mute">▣ ${esc(x.jobTitle)}</div>`:""}${x.sharedBy?`<div class="mute">⇄ ${t("shared")} ${esc(nm(x.sharedBy))}</div>`:""}<div style="margin-top:6px">${bar(x.progress)}</div>${ADMIN?waLink(x):""}</div>`;
 function taskTable(list){if(!list.length)return empty();
 return`<table><tr><th>${t("title")}</th>${ADMIN?`<th>${t("assignee")}</th>`:""}<th>${t("due")}</th><th>${t("status")}</th><th>${t("progress")}</th></tr>`+
 list.slice().sort((a,b)=>(a.due||"").localeCompare(b.due||"")).map(x=>`<tr data-tk="${x._m}|${x.id}" style="cursor:pointer"><td><b>${esc(x.title)}</b><div class="mute">${esc(x.jobTitle||"")}</div></td>${ADMIN?`<td>${esc(nm(x._m))}</td>`:""}
@@ -333,7 +333,7 @@ $("#ni").onclick=()=>simpleForm(ws(uid,"ideas"),[["title","text"],["category",["
 bind()}
 
 function renderEmp(a,top){const w=myW();const mine=(w.tasks||[]).map(x=>({...x,_m:uid}));
-if(view==="e_dash"){top(`<select id="avs" style="width:auto">${AV.map(k=>`<option value="${k}" ${(mem(uid).avail||"av_free")===k?"selected":""}>${t("myStatus")}: ${t(k)}</option>`).join("")}</select>`);$("#avs").onchange=e=>db.doc("members/"+uid).update({avail:e.target.value}).catch(err);a.innerHTML=`<div class="grid">
+if(view==="e_dash"){top(`<select id="avs" style="width:auto">${AV.map(k=>`<option value="${k}" ${(mem(uid).avail||"av_free")===k?"selected":""}>${t("myStatus")}: ${t(k)}</option>`).join("")}</select>`);$("#avs").onchange=e=>db.doc("members/"+uid).update({avail:e.target.value}).catch(err);a.innerHTML=`<div class="grid">`
 <div class="card stat"><b>${mine.filter(x=>x.status!=="s_done").length}</b><span>${t("open")}</span></div>
 <div class="card stat"><b style="color:var(--bad)">${mine.filter(isLate).length}</b><span>${t("late")}</span></div>
 <div class="card stat"><b style="color:var(--ok)">${mine.filter(x=>x.status==="s_done").length}</b><span>${t("doneW")}</span></div>
@@ -421,8 +421,7 @@ openDlg(isNew?t("newTask"):x.title,head+`<div class="row"><label class="grow">${
 <label class="grow">${t("progress")} %<input type="number" min="0" max="100" step="10" name="progress" value="${+x.progress||0}"></label></div>`,
 fd=>{const d=Object.fromEntries(fd);const m=d._m||x._m;delete d._m;if("checklistText"in d){const old=x.checklist||[];d.checklist=String(d.checklistText).split("\n").map(s=>s.trim()).filter(Boolean).map(s=>({t:s,done:!!(old.find(o=>o.t===s)||{}).done}));delete d.checklistText}else if((x.checklist||[]).length){d.checklist=x.checklist.map((c,i)=>({t:c.t,done:!!d["chk_"+i]}));Object.keys(d).filter(k=>k.startsWith("chk_")).forEach(k=>delete d[k])}if(d.status==="s_done"&&x.status!=="s_done")celebrate();d.progress=Math.min(100,+d.progress||0);if(d.status==="s_done")d.progress=100;
 if(ADMIN){const jj=jobs.find(j=>j.id===d.job);d.project=jj&&jj.project||x.project||"";d.jobTitle=[projName(d.project),jobName(d.job)].filter(Boolean).join(" · ")}if(!m)return;
-if(isNew)db.doc(`${ws(m,"tasks")}/${uuid()}`).set({...d,at:Date.now()}).then(()=>{log("task_add",d.title+" → "+nm(m));sysMsg(m,t("autoAssign").replace("{t}",d.title).replace("{d}",d.due))}).catch(err);
-else db.doc(`${ws(m,"tasks")}/${x.id}`).update(d).then(()=>{if(!ADMIN&&d.status==="s_done"&&x.status!=="s_done")db.collection(ws(uid,"msgs")).doc(uuid()).set({from:uid,sys:true,body:t("autoDone").replace("{n}",nm(uid)).replace("{t}",x.title),at:Date.now(),read:true,ownerRead:false}).catch(()=>{})}).catch(err)})}
+if(isNew)db.doc(`${ws(m,"tasks")}/${uuid()}`).set({...d,at:Date.now()}).then(()=>{log("task_add",d.title+" → "+nm(m));sysMsg(m,t("autoAssign").replace("{t}",d.title).replace("{d}",d.due))}).catch(err);else db.doc(`${ws(m,"tasks")}/${x.id}`).update(d).then(()=>{if(!ADMIN&&d.status==="s_done"&&x.status!=="s_done")db.collection(ws(uid,"msgs")).doc(uuid()).set({from:uid,sys:true,body:t("autoDone").replace("{n}",nm(uid)).replace("{t}",x.title),at:Date.now(),read:true,ownerRead:false}).catch(()=>{})}).catch(err)})}
 
 function simpleForm(col,fields,extra){openDlg(t("add"),fields.map(([k,ty])=>Array.isArray(ty)?`<label>${t(k)}<select name="${k}">${opt(ty)}</select></label>`:ty==="textarea"?`<label>${t(k)}<textarea name="${k}"></textarea></label>`:
 `<label>${t(k)}<input name="${k}" type="${ty}" ${ty==="number"?'step="0.001" min="0"':""} required></label>`).join(""),
