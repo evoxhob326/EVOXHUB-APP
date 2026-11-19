@@ -1,0 +1,9 @@
+
+const ICO={ig:'<path d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 3.9 3.9 2.4 7.2 2.3 8.4 2.2 8.8 2.2 12 2.2zm0 4.7a5.1 5.1 0 100 10.2 5.1 5.1 0 000-10.2zm0 8.4a3.3 3.3 0 110-6.6 3.3 3.3 0 010 6.6zm5.3-9.8a1.2 1.2 0 100 2.4 1.2 1.2 0 000-2.4z"/>',
+ map:'<path d="M12 2a7 7 0 00-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z"/>',
+ wa:'<path d="M12 2a10 10 0 00-8.6 15.1L2 22l5-1.3A10 10 0 1012 2zm5.8 14.1c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3s.8-2.2 1.1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.3 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l2 .9c.3.1.5.2.5.3.1.2.1.8-.1 1.5z"/>',
+ card:'<path d="M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm5 3a2.5 2.5 0 100 5 2.5 2.5 0 000-5zm-4 8h8c0-2-1.8-3-4-3s-4 1-4 3zm10-7v1.5h6V9h-6zm0 3v1.5h6V12h-6z"/>'};
+loadLinks=async function(){const L=document.getElementById("links");if(!L)return;let d={};try{const {data}=await SB.from("docs").select("data").eq("path","settings/links").maybeSingle();d=(data&&data.data)||{}}catch(e){}
+ const it=[["ig",d.ig||"https://instagram.com/evoxhub.om","إنستغرام"],["wa",d.wa&&("https://wa.me/"+String(d.wa).replace(/\D/g,"")),"واتساب"],["card",d.card,"البطاقة الرقمية"],["map",d.map,"Google Maps"]].filter(a=>a[1]);
+ L.innerHTML=it.map(([k,u,n],i)=>`<a class="lk" style="animation-delay:${1+i*.15}s" href="${String(u).replace(/"/g,"")}" target="_blank" rel="noopener"><span class="ic"><svg viewBox="0 0 24 24">${ICO[k]}</svg></span>${n}</a>`).join("")};
+if(document.getElementById('links'))loadLinks();
