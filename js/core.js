@@ -24,11 +24,11 @@ document.getElementById('gs').onclick=e=>{e.preventDefault();gateLogin(mode==='u
 document.getElementById('gb').onclick=async()=>{const em=ge.value.trim(),pw=gp.value;let r;
  if(mode==='up'){if(!gn.value.trim())return gr.textContent='اكتب اسمك';r=await SB.auth.signUp({email:em,password:pw,options:{data:{full_name:gn.value.trim()}}})}else r=await SB.auth.signInWithPassword({email:em,password:pw});
  if(r.error)return gr.textContent=mode==='up'?r.error.message:'بيانات الدخول غير صحيحة';start()}}
-function gateMsg(t){G.innerHTML=`<div class="login"><div class="card"><div class="lg"><b>EVO<i>X</i>HUB</b></div><p class="s">${t}</p><button class="b" style="width:100%" onclick="SB.auth.signOut().then(()=>location.reload())">خروج</button></div></div>`}
+function gateMsg(t){G.innerHTML=`<div class="login"><div class="card login-card"><header class="login-brand"><img class="login-tiger" src="${TIGER}" alt="نمر EVOXHUB"><div><div class="lg"><b>EVO<i>X</i>HUB</b></div><p class="s">${t}</p></div></header><button class="b gold" style="width:100%" onclick="SB.auth.signOut().then(()=>location.reload())">خروج</button></div></div>`}
 async function pendPanel(){if(!PROFILE||!['owner','deputy'].includes(PROFILE.role))return;const {data}=await SB.from('profiles').select('*').eq('status','pending');const B=document.getElementById('pendBox');
 B.innerHTML=(data||[]).length?`<div class="card"><b>طلبات انضمام (${data.length})</b>${data.map(p=>`<div class="row" style="margin-top:8px"><span class="grow">${(p.full_name||'').replace(/</g,'&lt;')}</span><button class="b sm pri" data-pa="${p.id}|active">قبول</button><button class="b sm" data-pa="${p.id}|disabled">رفض</button></div>`).join('')}</div>`:'';
 B.querySelectorAll('[data-pa]').forEach(b=>b.onclick=async()=>{const[id,s]=b.dataset.pa.split('|');await SB.from('profiles').update({status:s}).eq('id',id);pendPanel()})}
-async function start(){const {data:{session}}=await SB.auth.getSession();if(!session)return gateLogin('in');
+async function start(){const {data:{session}}=await SB.auth.getSession();if(!session){const requested=new URLSearchParams(location.search).get('mode');return gateLogin(requested==='register'?'up':'in')}
 const {data}=await SB.from('profiles').select('*').eq('id',session.user.id).single();PROFILE=data;
 if(!PROFILE||PROFILE.status!=='active')return gateMsg('تم تسجيل حسابك، وبانتظار موافقة الإدارة');
 G.innerHTML='';document.getElementById('shellRoot').style.display='';document.getElementById('rain').style.opacity=.2;await window.bootApp();pendPanel();if(!window.__pendTimer)window.__pendTimer=setInterval(pendPanel,60000)}
