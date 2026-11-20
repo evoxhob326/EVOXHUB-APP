@@ -86,6 +86,22 @@ a{color:var(--petrol3)}a.wa{color:var(--ok);font-size:13px}
 .login .card{width:min(400px,100%);padding:26px;animation:pop .3s .1s cubic-bezier(.2,.8,.2,1) both}
 .login .lg{text-align:center;direction:ltr}.login .lg b{font:800 34px Tajawal;letter-spacing:3px;color:var(--petrol)}.login .lg i{font-style:normal;color:var(--sand)}
 .login p.s{text-align:center;color:#8a6a28;margin:4px 0 18px;font-weight:700}
+.login{gap:10px}.login .login-card{width:min(460px,calc(100vw - 28px));padding:clamp(18px,4vw,30px);border-color:rgba(201,164,92,.72);background:linear-gradient(145deg,#fffdf7,#f3ead4)}
+.login-brand{display:flex;align-items:center;justify-content:center;gap:16px;margin:0 auto 18px}.login-brand .lg b{font-size:clamp(27px,6vw,36px)}.login-brand p.s{margin:4px 0 0;color:#876a32}
+.login-brand .login-tiger{width:102px;height:88px;padding:4px;border:1px solid rgba(201,164,92,.38);border-radius:18px;background:rgba(11,61,63,.07);object-fit:contain}
+.auth-switch{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;margin:0 0 12px;border:1px solid rgba(201,164,92,.42);border-radius:13px;background:#f4f2e9}
+.auth-switch button{min-height:42px;border:0;border-radius:9px;background:transparent;color:#465350;font:700 14px Tajawal;cursor:pointer;transition:background .2s,color .2s,transform .2s}
+.auth-switch button:hover{background:rgba(11,61,63,.07)}.auth-switch button.active{background:linear-gradient(120deg,#e0c786,#c9a45c);color:#171717;box-shadow:0 4px 12px rgba(116,85,27,.16)}
+.login .auth-intro{margin:0 0 14px;text-align:center;color:#465350;line-height:1.6}
+.login-card form{display:grid;gap:10px}.login-card label{color:#344240;font-weight:700}.login-card input{min-height:44px;border-color:#d7c89f;background:#fff;color:#171b1b}
+.auth-submit{width:100%;min-height:46px;padding:10px 14px!important;font-weight:800!important}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:12px 0;color:#78827d;font-size:13px}.auth-divider:before,.auth-divider:after{content:"";height:1px;flex:1;background:rgba(11,61,63,.16)}
+.auth-google{width:100%;min-height:46px;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff!important;border-color:rgba(11,61,63,.22)!important;color:#203432!important;font-weight:700!important;transition:transform .18s,box-shadow .18s,border-color .18s}
+.auth-google:hover{transform:translateY(-1px);border-color:var(--sand)!important;box-shadow:0 6px 18px rgba(11,61,63,.12)}.auth-google svg{flex:none}
+.auth-team-note{margin:11px 0 0;text-align:center;color:#68736f;font-size:12px;line-height:1.6}
+.login-request-link{padding:4px 12px;border-radius:10px;text-shadow:0 1px 8px rgba(0,0,0,.3)}
+@media(max-width:480px){.login{padding:14px 8px}.login .login-card{padding:20px 16px}.login-brand{gap:11px}.login-brand .login-tiger{width:84px;height:76px}.login .lg b{letter-spacing:2px}}
+@media(prefers-reduced-motion:reduce){.auth-switch button,.auth-google{transition:none!important}.login-brand .login-tiger{animation:none!important}}
 .err{color:var(--bad);font-size:14px;min-height:18px}
 #pendBox{position:fixed;bottom:18px;inset-inline-start:18px;z-index:8;width:min(340px,92vw)}
 
