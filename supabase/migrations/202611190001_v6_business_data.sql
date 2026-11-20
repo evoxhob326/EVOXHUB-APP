@@ -1,5 +1,4 @@
--- EVOXHUB v6 additive schema. Review and run against a non-production project first.
--- This migration is intentionally not applied to the live Supabase project.
+-- EVOXHUB v6 schema upgrade. Existing website request records are preserved.
 begin;
 
 create extension if not exists pgcrypto with schema extensions;
@@ -93,6 +92,54 @@ create table if not exists public.website_requests (
   converted_at timestamptz,
   check (request_no <> '')
 );
+
+-- Upgrade the older EVOXHUB website request table in place. Existing requests
+-- keep their original columns and values; the v6 fields are added alongside them.
+alter table public.website_requests add column if not exists service_id text references public.services(id) on update cascade on delete restrict;
+alter table public.website_requests add column if not exists brand text;
+alter table public.website_requests add column if not exists converted_at timestamptz;
+
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema='public' and table_name='website_requests' and column_name='division'
+  ) then
+    execute $sql$
+      update public.website_requests
+      set brand = case division::text when 'reve' then 'reve' else 'evx' end
+      where brand is null or (brand = 'evx' and division::text = 'reve')
+    $sql$;
+  end if;
+end $$;
+
+update public.website_requests set brand = 'evx' where brand is null;
+alter table public.website_requests alter column brand set default 'evx';
+alter table public.website_requests alter column brand set not null;
+
+-- The previous deployment used an enum with fewer statuses. Convert it to text
+-- so the new workflow can add review and closed states without losing old rows.
+alter table public.website_requests drop constraint if exists website_requests_status_check;
+alter table public.website_requests alter column status drop default;
+alter table public.website_requests alter column status type text using status::text;
+alter table public.website_requests alter column status set default 'new';
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint
+    where conrelid='public.website_requests'::regclass and conname='website_requests_status_v6_check'
+  ) then
+    alter table public.website_requests add constraint website_requests_status_v6_check
+      check (status in ('new','reviewing','contacted','converted','rejected','closed'));
+  end if;
+  if not exists (
+    select 1 from pg_constraint
+    where conrelid='public.website_requests'::regclass and conname='website_requests_brand_v6_check'
+  ) then
+    alter table public.website_requests add constraint website_requests_brand_v6_check
+      check (brand in ('evx','reve','cc142'));
+  end if;
+end $$;
 
 create table if not exists public.website_request_limits (
   phone_hash text primary key,
